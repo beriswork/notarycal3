@@ -2,9 +2,28 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from '../page.module.css';
-import { calculateDistance, convertToMinutes } from '../utils/calculatorUtils';
+import { calculateDistance } from '../utils/calculatorUtils';
 import type { DistanceMatrixResponse } from '../types';
 import { useAuth } from '../context/AuthContext';
+
+// Declare Google Maps types
+declare global {
+  interface Window {
+    google: {
+      maps: {
+        places: {
+          Autocomplete: new (
+            input: HTMLInputElement,
+            opts?: { types?: string[] }
+          ) => google.maps.places.Autocomplete;
+        };
+        event: {
+          clearInstanceListeners: (instance: any) => void;
+        };
+      };
+    };
+  }
+}
 
 interface TravelDetailsProps {
   onDistanceCalculated: (distance: number, duration: number) => void;
@@ -22,21 +41,23 @@ export const TravelDetails = ({ onDistanceCalculated }: TravelDetailsProps) => {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let startAutocomplete: google.maps.places.Autocomplete;
-    let destinationAutocomplete: google.maps.places.Autocomplete;
+    let startAutocomplete: google.maps.places.Autocomplete | null = null;
+    let destinationAutocomplete: google.maps.places.Autocomplete | null = null;
 
     const initAutocomplete = () => {
       if (!startLocationRef.current || !destinationRef.current) return;
       if (!window.google?.maps?.places) return;
 
       try {
-        startAutocomplete = new window.google.maps.places.Autocomplete(startLocationRef.current, {
-          types: ['address']
-        });
+        startAutocomplete = new window.google.maps.places.Autocomplete(
+          startLocationRef.current,
+          { types: ['address'] }
+        );
 
-        destinationAutocomplete = new window.google.maps.places.Autocomplete(destinationRef.current, {
-          types: ['address']
-        });
+        destinationAutocomplete = new window.google.maps.places.Autocomplete(
+          destinationRef.current,
+          { types: ['address'] }
+        );
       } catch (error) {
         console.error('Error initializing autocomplete:', error);
       }
@@ -99,7 +120,6 @@ export const TravelDetails = ({ onDistanceCalculated }: TravelDetailsProps) => {
         `Distance: ${element.distance.text}\n` +
         `Estimated travel time: ${element.duration.text}`
       );
-
     } catch (error) {
       console.error('Error calculating distance:', error);
       alert(error instanceof Error ? error.message : 'Error calculating distance. Please try again.');

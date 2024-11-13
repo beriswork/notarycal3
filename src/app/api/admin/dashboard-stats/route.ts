@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/app/lib/mongodb';
-import User from '@/app/models/User';
-import Activity from '@/app/models/Activity';
+import dbConnect from '../../../lib/mongodb';
+import User from '../../../models/User';
+import Activity from '../../../models/Activity';
 
 const formatActivityMessage = (activity: any) => {
   const email = activity.user.email;
