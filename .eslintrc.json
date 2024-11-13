@@ -1,8 +1,13 @@
 {
   "extends": [
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "eslint:recommended"
   ],
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    // Add any custom rules here
   }
 }
