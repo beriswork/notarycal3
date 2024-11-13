@@ -25,9 +25,10 @@
     "recharts": "^2.13.3"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.58.1",
     "@types/mongoose": "^5.11.97",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.1.0",
+    "eslint-config-next": "^14.1.0",
     "typescript": "^5.3.3"
   }
 }

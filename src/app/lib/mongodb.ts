@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your MongoDB URI to .env.local');
+  throw new Error('Please define the MONGODB_URI environment variable');
 }
 
 let cached = global.mongoose;
@@ -12,41 +12,34 @@ if (!cached) {
 
 async function dbConnect() {
   if (cached.conn) {
-    console.log('Using cached MongoDB connection');
     return cached.conn;
   }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      dbName: process.env.MONGODB_DB || 'notary_calculator',
+      maxPoolSize: 10,
     };
 
     try {
-      console.log('Connecting to MongoDB...');
-      cached.promise = mongoose.connect(process.env.MONGODB_URI!, {
-        ...opts,
-        dbName: process.env.MONGODB_DB || 'notary_calculator',
-        maxPoolSize: 10
-      }).then((mongoose) => {
-        console.log('MongoDB connected successfully');
-        return mongoose;
-      });
-    } catch (error) {
+      cached.promise = mongoose.connect(process.env.MONGODB_URI!, opts);
+      const connection = await cached.promise;
+      cached.conn = connection.connection;
+    } catch (e) {
       cached.promise = null;
-      console.error('MongoDB connection error:', error);
-      throw error;
+      throw e;
     }
   }
 
   try {
-    cached.conn = await cached.promise;
-  } catch (error) {
+    await cached.promise;
+  } catch (e) {
     cached.promise = null;
-    console.error('Error awaiting MongoDB connection:', error);
-    throw error;
+    throw e;
   }
 
   return cached.conn;
 }
 
-export default dbConnect; 
+export default dbConnect;
