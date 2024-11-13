@@ -27,7 +27,7 @@ export const AnimatedNumber = ({ value, duration = 1000 }: AnimatedNumberProps) 
     };
 
     requestAnimationFrame(animate);
-  }, [value, duration]);
+  }, [value, duration, displayValue]);
 
   return (
     <div className={styles.number}>

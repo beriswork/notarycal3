@@ -8,21 +8,15 @@ declare global {
 }
 
 export interface DistanceMatrixResponse {
-  destinationAddresses: string[];
-  originAddresses: string[];
   rows: {
     elements: {
-      distance: {
-        text: string;
-        value: number;  // in meters
-      };
-      duration: {
-        text: string;
-        value: number;  // in seconds
-      };
+      distance: { value: number; text: string };
+      duration: { value: number; text: string };
       status: string;
     }[];
   }[];
+  originAddresses: string[];
+  destinationAddresses: string[];
   status: string;
 }
 

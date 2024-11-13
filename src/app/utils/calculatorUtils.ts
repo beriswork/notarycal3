@@ -24,19 +24,21 @@ export const calculateDistance = async (
       avoidTolls: false
     };
 
-    return new Promise((resolve, reject) => {
+    return new Promise<DistanceMatrixResponse>((resolve, reject) => {
       service.getDistanceMatrix(
         request,
         (
-          response: google.maps.DistanceMatrixResponse,
+          response: google.maps.DistanceMatrixResponse | null,
           status: google.maps.DistanceMatrixStatus
         ) => {
           if (status === 'OK' && response) {
-            if (response.rows[0].elements[0].status === 'OK') {
-              resolve(response as DistanceMatrixResponse);
-            } else {
-              reject(new Error('No route found between these locations.'));
-            }
+            const convertedResponse: DistanceMatrixResponse = {
+              rows: response.rows,
+              originAddresses: response.originAddresses,
+              destinationAddresses: response.destinationAddresses,
+              status: status
+            };
+            resolve(convertedResponse);
           } else {
             reject(new Error(`Distance Matrix API error: ${status}`));
           }

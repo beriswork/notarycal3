@@ -24,11 +24,12 @@
     "recharts": "^2.13.3"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.58.1",
     "@types/node": "22.9.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "eslint": "^8.0.0",
-    "eslint-config-next": "^13.0.0",
-    "typescript": "^5.0.0"
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.1.0",
+    "typescript": "5.1.6"
   }
 }

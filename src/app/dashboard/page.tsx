@@ -13,7 +13,7 @@ import { useAuth } from '../context/AuthContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function Dashboard() {
-  const router = useRouter();
+  const _router = useRouter();
   const { isAuthenticated, credits, decrementCredits, userEmail } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   

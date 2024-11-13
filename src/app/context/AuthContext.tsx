@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 
@@ -41,12 +41,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkSession();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (_email: string, _password: string) => {
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ _email, _password })
       });
 
       const data = await response.json();
@@ -56,11 +56,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setIsAuthenticated(true);
-      setUserEmail(email);
+      setUserEmail(_email);
       setCredits(data.user.credits);
       
       sessionStorage.setItem('user_session', JSON.stringify({
-        email,
+        _email,
         credits: data.user.credits
       }));
       
@@ -84,13 +84,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.replace('/login');
   };
 
-  const signup = async (email: string, password: string) => {
+  const signup = async (_email: string, _password: string) => {
     try {
       console.log('AuthContext: Starting signup process...');
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ _email, _password })
       });
 
       const data = await response.json();
@@ -144,8 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Add a function to refresh credits
-  const refreshCredits = async () => {
+  const refreshCredits = useCallback(async () => {
     if (!userEmail) return;
 
     try {
@@ -159,7 +158,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.credits !== undefined) {
         setCredits(data.credits);
         
-        // Update session storage
         const session = JSON.parse(sessionStorage.getItem('user_session') || '{}');
         session.credits = data.credits;
         sessionStorage.setItem('user_session', JSON.stringify(session));
@@ -167,15 +165,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Error refreshing credits:', error);
     }
-  };
+  }, [userEmail]);
 
-  // Add an effect to periodically refresh credits
   useEffect(() => {
     if (isAuthenticated && userEmail) {
-      const interval = setInterval(refreshCredits, 5000); // Refresh every 5 seconds
+      const interval = setInterval(refreshCredits, 5000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated, userEmail]);
+  }, [isAuthenticated, userEmail, refreshCredits]);
 
   return (
     <AuthContext.Provider value={{

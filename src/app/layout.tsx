@@ -4,6 +4,7 @@ import './globals.css'
 import { Poppins } from 'next/font/google'
 import { AuthProvider } from './context/AuthContext'
 import { Header } from './components/Header'
+import React from 'react'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
