@@ -14,7 +14,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function Dashboard() {
   const _router = useRouter();
-  const { isAuthenticated, credits, decrementCredits, userEmail } = useAuth();
+  const { isAuthenticated, credits, decrementCredits, userEmail: _userEmail } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   
 

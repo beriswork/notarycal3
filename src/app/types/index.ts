@@ -3,7 +3,7 @@ declare global {
   interface Window {
     google: typeof google;
     jspdf: any;
-    feeData: FeeData;
+    feeData?: FeeData;
   }
 }
 
